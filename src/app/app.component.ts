@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Observable, from, of } from 'rxjs';
+import { Observable, filter, from, interval, map, of, take } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -9,15 +9,22 @@ import { Observable, from, of } from 'rxjs';
 export class AppComponent {
   title = 'rxjs-tutorial';
 
-  listUsers: string[] = ['user1', 'user2', 'user3'];
-  users: Observable<string> = from(this.listUsers); // from: chỉ truyền vào mảng
+  testInterval$ = interval(1000);
 
   ngOnInit(): void {
-    this.users.subscribe((data) => {
-      console.log(`🚀 ~ data:`, data);
-      // 'user1'
-      // 'user2'
-      // 'user3'
-    });
+    // this.testInterval$.subscribe((data) => {
+    //   console.log(`🚀 ~ data:`, data);
+    //   // data chạy từ 0 và tăng 1 đơn vị sau mỗi 1s
+    // });
+
+    this.testInterval$
+      .pipe(
+        map((value) => value * 2), // biến đổi giá trị,
+        filter((value) => value % 5 === 0), // lọc giá trị
+        take(4) // lấy 4 giá trị đầu
+      )
+      .subscribe((data) => {
+        console.log(`🚀 ~ data:`, data);
+      });
   }
 }
