@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -8,22 +8,21 @@ import { Observable } from 'rxjs';
 })
 export class AppComponent {
   title = 'rxjs-tutorial';
+  listUsers: string[] = ['user1', 'user2', 'user3'];
 
-  listUsers!: Observable<string>;
-  user!: string;
+  users: Observable<string[]> = of(this.listUsers);
+
+  users$: Observable<any[]> = of(this.listUsers);
 
   ngOnInit(): void {
-    this.listUsers = new Observable((subscriber) => {
-      subscriber.next('user 1');
-      subscriber.next('user 2');
-      subscriber.next('user 3');
+    this.users.subscribe((data) => {
+      console.log(`🚀 ~ data 1:`, data);
+      // ['user1', 'user2', 'user3'];
     });
-    this.listUsers.subscribe((data: string) => {
-      console.log(`🚀 ~ data:`, data);
-      this.user = data;
-      // user 1
-      // user 2
-      // user 3
+
+    this.users$.subscribe((data) => {
+      console.log(`🚀 ~ data 2:`, data);
+      // ['user1', 'user2', 'user3'];
     });
   }
 }
