@@ -1,5 +1,17 @@
-import { Component } from '@angular/core';
-import { Observable, filter, from, interval, map, of, take } from 'rxjs';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+import {
+  Observable,
+  debounce,
+  debounceTime,
+  filter,
+  from,
+  fromEvent,
+  interval,
+  map,
+  of,
+  take,
+} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -9,20 +21,14 @@ import { Observable, filter, from, interval, map, of, take } from 'rxjs';
 export class AppComponent {
   title = 'rxjs-tutorial';
 
-  testInterval$ = interval(1000);
-
+  form = new FormGroup({
+    text: new FormControl(''),
+  });
   ngOnInit(): void {
-    // this.testInterval$.subscribe((data) => {
-    //   console.log(`🚀 ~ data:`, data);
-    //   // data chạy từ 0 và tăng 1 đơn vị sau mỗi 1s
-    // });
-
-    this.testInterval$
-      .pipe(
-        map((value) => value * 2), // biến đổi giá trị,
-        filter((value) => value % 5 === 0), // lọc giá trị
-        take(4) // lấy 4 giá trị đầu
-      )
+    this.form
+      .get('text')
+      ?.valueChanges.pipe(debounceTime(1000)) // phát ra sự kiện sau mỗi 1s
+      // valueChanges: là 1 observable
       .subscribe((data) => {
         console.log(`🚀 ~ data:`, data);
       });
