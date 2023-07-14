@@ -5,6 +5,7 @@ import {
   debounce,
   debounceTime,
   filter,
+  first,
   from,
   fromEvent,
   interval,
@@ -23,16 +24,18 @@ import {
 export class AppComponent {
   title = 'rxjs-tutorial';
 
-  listNumbers: number[] = [1, 2, 3, 4];
-
-  numbers$ = from(this.listNumbers);
+  listNumbers: number[] = [1, 2, 3, 4, 5];
+  listNumbers$: Observable<number> = from(this.listNumbers);
 
   ngOnInit(): void {
-    this.numbers$.pipe(takeLast(2)).subscribe((data) => {
-      // takeLast(2): lấy ra 2 giá trị cuối cùng
-      console.log(`🚀 ~ data:`, data);
-      // 3
-      // 4
+    this.listNumbers$.pipe(first()).subscribe((data) => {
+      // first(): lấy ra giá trị đầu tiên khi ko truyền vào đối số
+      console.log(data); // 1
+    });
+
+    this.listNumbers$.pipe(first((data) => data > 2)).subscribe((data) => {
+      // first(true condition) => lấy giá trị đầu tiên thỏa mãn điều kiện
+      console.log(data); // 3
     });
   }
 }
