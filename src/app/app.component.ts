@@ -11,6 +11,7 @@ import {
   map,
   of,
   take,
+  takeWhile,
 } from 'rxjs';
 
 @Component({
@@ -21,15 +22,17 @@ import {
 export class AppComponent {
   title = 'rxjs-tutorial';
 
-  listUsers: string[] = ['user1', 'user2', 'user3', 'user4', 'user5'];
-  users = from(this.listUsers);
+  listNumbers: number[] = [1, 2, 3, 4, 5, 6, 1, 2, 3];
+  nunbers$ = from(this.listNumbers);
+
   ngOnInit(): void {
-    this.users.pipe(take(3)).subscribe((data) => {
-      // take(3): lấy 3 giá trị đầu tiên
-      console.log(`🚀 ~ data:`, data);
-      // user1
-      // user2
-      // user3
+    this.nunbers$.pipe(takeWhile((data) => data < 5)).subscribe((data) => {
+      // takeWhile: lấy giá trị thỏa mãn điều kiện, nếu không đúng lập tức dừng
+      console.log(data);
+      // 1
+      // 2
+      // 3
+      // 4
     });
   }
 }
