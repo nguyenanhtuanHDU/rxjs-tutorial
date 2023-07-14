@@ -21,16 +21,15 @@ import {
 export class AppComponent {
   title = 'rxjs-tutorial';
 
-  form = new FormGroup({
-    text: new FormControl(''),
-  });
+  listUsers: string[] = ['user1', 'user2', 'user3', 'user4', 'user5'];
+  users = from(this.listUsers);
   ngOnInit(): void {
-    this.form
-      .get('text')
-      ?.valueChanges.pipe(debounceTime(1000)) // phát ra sự kiện sau mỗi 1s
-      // valueChanges: là 1 observable
-      .subscribe((data) => {
-        console.log(`🚀 ~ data:`, data);
-      });
+    this.users.pipe(take(3)).subscribe((data) => {
+      // take(3): lấy 3 giá trị đầu tiên
+      console.log(`🚀 ~ data:`, data);
+      // user1
+      // user2
+      // user3
+    });
   }
 }
