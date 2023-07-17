@@ -9,6 +9,7 @@ import {
   from,
   fromEvent,
   interval,
+  last,
   map,
   of,
   take,
@@ -23,18 +24,18 @@ import {
 })
 export class AppComponent {
   title = 'rxjs-tutorial';
-
+  listUsers: string[] = ['tuan', 'nam', 'quan'];
   listNumbers: number[] = [1, 2, 3, 4, 5];
-  listNumbers$: Observable<number> = from(this.listNumbers);
-
+  users$: Observable<string> = from(this.listUsers);
+  numbers$: Observable<number> = from(this.listNumbers);
   ngOnInit(): void {
-    this.listNumbers$.pipe(first()).subscribe((data) => {
-      // first(): lấy ra giá trị đầu tiên khi ko truyền vào đối số
-      console.log(data); // 1
+    this.users$.pipe(last()).subscribe((data) => {
+      // last(): lấy ra phần tử cuối cùng
+      console.log(data); // quan
     });
 
-    this.listNumbers$.pipe(first((data) => data > 2)).subscribe((data) => {
-      // first(true condition) => lấy giá trị đầu tiên thỏa mãn điều kiện
+    this.numbers$.pipe(last((data) => data < 4)).subscribe((data) => {
+      // last(điều kiện): lấy ra phần tử cuối thỏa mãn điều kiện
       console.log(data); // 3
     });
   }
