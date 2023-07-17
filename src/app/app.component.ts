@@ -24,16 +24,19 @@ import {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  listUsers: string[] = ['tuan', 'nam', 'quan', 'cuong'];
-  users$: Observable<string> = from(this.listUsers);
+  listNumbers: number[] = [123, 55, 78, 44, 90, 2];
+  numbers$: Observable<number> = from(this.listNumbers);
+
   ngOnInit(): void {
-    this.users$.pipe(elementAt(3)).subscribe((data) => {
-      // elementAt(index): lấy ra phần từ ở vị trí index
-      console.log(data); // cuong
+    this.numbers$.pipe(filter((value) => value > 60)).subscribe((data) => {
+      console.log(data); // 123, 78, 90
     });
 
-    this.users$.pipe(elementAt(6)).subscribe((data) => {
-      console.log(data); // ERROR
-    });
+    this.numbers$
+      .pipe(filter((value, index) => value > 50 && index % 2 === 0))
+      // hỗ trợ index
+      .subscribe((data) => {
+        console.log(data); // 123, 78, 90
+      });
   }
 }
