@@ -4,6 +4,7 @@ import {
   Observable,
   debounce,
   debounceTime,
+  distinct,
   elementAt,
   filter,
   first,
@@ -24,19 +25,50 @@ import {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  listNumbers: number[] = [123, 55, 78, 44, 90, 2];
+  listNumbers: number[] = [1, 2, 3, 1, 2, 3, 4];
   numbers$: Observable<number> = from(this.listNumbers);
 
+  listUsers: any[] = [
+    {
+      username: 'user1',
+      age: 20,
+    },
+    {
+      username: 'user2',
+      age: 20,
+    },
+    {
+      username: 'user3',
+      age: 21,
+    },
+    {
+      username: 'user4',
+      age: 22,
+    },
+  ];
+
+  users$: Observable<any> = from(this.listUsers);
+
   ngOnInit(): void {
-    this.numbers$.pipe(filter((value) => value > 60)).subscribe((data) => {
-      console.log(data); // 123, 78, 90
+    this.numbers$.pipe(distinct()).subscribe((data) => {
+      // distinct(): loại bỏ giá trị trùng lặp
+      console.log(data); // 1,2,3,4
     });
 
-    this.numbers$
-      .pipe(filter((value, index) => value > 50 && index % 2 === 0))
-      // hỗ trợ index
-      .subscribe((data) => {
-        console.log(data); // 123, 78, 90
-      });
+    this.users$.pipe(distinct((value) => value.age)).subscribe((data) => {
+      console.log(data);
+      //     {
+      //        username: 'user1',
+      //        age: 20,
+      //     },
+      //     {
+      //        username: 'user3',
+      //        age: 21,
+      //     },
+      //     {
+      //        username: 'user4',
+      //        age: 22,
+      //     },
+    });
   }
 }
