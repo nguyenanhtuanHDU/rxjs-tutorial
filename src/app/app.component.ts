@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import {
   Observable,
+  Subscription,
   count,
   debounce,
   debounceTime,
@@ -21,6 +22,7 @@ import {
   takeLast,
   takeWhile,
 } from 'rxjs';
+import { AppService } from './app.service';
 
 @Component({
   selector: 'app-root',
@@ -28,38 +30,28 @@ import {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  listNumber: number[] = [1, 2, 3, 4, 5];
-  numbers$: Observable<number> = from(this.listNumber);
+  constructor(private readonly appService: AppService) {}
+  api: string = 'https://dog.ceo/api/breeds/image/random';
+  img1: string = '';
+  img2: string = '';
 
-  listUsers: any[] = [
-    {
-      username: 'user1',
-      age: 20,
-    },
-    {
-      username: 'user2',
-      age: 21,
-    },
-    {
-      username: 'user3',
-      age: 22,
-    },
-  ];
-
-  users$: Observable<any> = from(this.listUsers);
-
+  subscription = new Subscription();
   ngOnInit(): void {
-    this.numbers$.pipe(max()).subscribe((data) => {
-      // max(): phần tử lớn nhất
-      console.log(data); // 5
-    });
+    this.subscription.add(
+      this.appService.getSingleDog().subscribe((data: any) => {
+        console.log('data1', data);
+        this.img1 = data.message;
+      })
+    );
+    this.subscription.add(
+      this.appService.getSingleDog().subscribe((data: any) => {
+        console.log('data2', data);
+        this.img2 = data.message;
+      })
+    );
+  }
 
-    this.users$.pipe(max((a, b) => a.age - b.age)).subscribe((data) => {
-      console.log(data);
-      // {
-      //   username: 'user3',
-      //   age: 22,
-      // },
-    });
+  unsub() {
+    this.subscription.unsubscribe();
   }
 }
