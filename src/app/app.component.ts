@@ -14,6 +14,7 @@ import {
   interval,
   last,
   map,
+  max,
   of,
   skip,
   take,
@@ -30,14 +31,35 @@ export class AppComponent {
   listNumber: number[] = [1, 2, 3, 4, 5];
   numbers$: Observable<number> = from(this.listNumber);
 
+  listUsers: any[] = [
+    {
+      username: 'user1',
+      age: 20,
+    },
+    {
+      username: 'user2',
+      age: 21,
+    },
+    {
+      username: 'user3',
+      age: 22,
+    },
+  ];
+
+  users$: Observable<any> = from(this.listUsers);
+
   ngOnInit(): void {
-    this.numbers$.pipe(count()).subscribe((data) => {
-      // count(): đếm số lượng phần tử
+    this.numbers$.pipe(max()).subscribe((data) => {
+      // max(): phần tử lớn nhất
       console.log(data); // 5
     });
 
-    this.numbers$.pipe(count((value) => value > 2)).subscribe((data) => {
-      console.log(data); // 3
+    this.users$.pipe(max((a, b) => a.age - b.age)).subscribe((data) => {
+      console.log(data);
+      // {
+      //   username: 'user3',
+      //   age: 22,
+      // },
     });
   }
 }
