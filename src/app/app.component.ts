@@ -14,6 +14,7 @@ import {
   last,
   map,
   of,
+  skip,
   take,
   takeLast,
   takeWhile,
@@ -25,50 +26,13 @@ import {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  listNumbers: number[] = [1, 2, 3, 1, 2, 3, 4];
-  numbers$: Observable<number> = from(this.listNumbers);
-
-  listUsers: any[] = [
-    {
-      username: 'user1',
-      age: 20,
-    },
-    {
-      username: 'user2',
-      age: 20,
-    },
-    {
-      username: 'user3',
-      age: 21,
-    },
-    {
-      username: 'user4',
-      age: 22,
-    },
-  ];
-
-  users$: Observable<any> = from(this.listUsers);
+  listNumber: number[] = [1, 2, 3, 4, 5];
+  numbers$: Observable<number> = from(this.listNumber);
 
   ngOnInit(): void {
-    this.numbers$.pipe(distinct()).subscribe((data) => {
-      // distinct(): loại bỏ giá trị trùng lặp
-      console.log(data); // 1,2,3,4
-    });
-
-    this.users$.pipe(distinct((value) => value.age)).subscribe((data) => {
-      console.log(data);
-      //     {
-      //        username: 'user1',
-      //        age: 20,
-      //     },
-      //     {
-      //        username: 'user3',
-      //        age: 21,
-      //     },
-      //     {
-      //        username: 'user4',
-      //        age: 22,
-      //     },
+    this.numbers$.pipe(skip(2)).subscribe((data) => {
+      // skip(number): bỏ qua number giá trị đầu tiên
+      console.log(data); // 3,4,5
     });
   }
 }
