@@ -4,6 +4,7 @@ import {
   Observable,
   debounce,
   debounceTime,
+  elementAt,
   filter,
   first,
   from,
@@ -23,20 +24,16 @@ import {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'rxjs-tutorial';
-  listUsers: string[] = ['tuan', 'nam', 'quan'];
-  listNumbers: number[] = [1, 2, 3, 4, 5];
+  listUsers: string[] = ['tuan', 'nam', 'quan', 'cuong'];
   users$: Observable<string> = from(this.listUsers);
-  numbers$: Observable<number> = from(this.listNumbers);
   ngOnInit(): void {
-    this.users$.pipe(last()).subscribe((data) => {
-      // last(): lấy ra phần tử cuối cùng
-      console.log(data); // quan
+    this.users$.pipe(elementAt(3)).subscribe((data) => {
+      // elementAt(index): lấy ra phần từ ở vị trí index
+      console.log(data); // cuong
     });
 
-    this.numbers$.pipe(last((data) => data < 4)).subscribe((data) => {
-      // last(điều kiện): lấy ra phần tử cuối thỏa mãn điều kiện
-      console.log(data); // 3
+    this.users$.pipe(elementAt(6)).subscribe((data) => {
+      console.log(data); // ERROR
     });
   }
 }
