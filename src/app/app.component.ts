@@ -9,6 +9,8 @@ import {
   debounce,
   debounceTime,
   distinct,
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
   elementAt,
   filter,
   first,
@@ -35,14 +37,36 @@ import { AppService } from './app.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  arr1: Observable<number> = from([1, 1]);
-  arr2: Observable<number> = from([2, 2]);
-  arr3: Observable<number> = from([3, 3]);
+  numbers$: Observable<number> = from([1, 2, 3, 2]);
+
+  users$ = from([
+    {
+      name: 'user1',
+      age: 12,
+    },
+    {
+      name: 'user2',
+      age: 12,
+    },
+    {
+      name: 'user3',
+      age: 12,
+    },
+    {
+      name: 'user2',
+      age: 12,
+    },
+  ]);
 
   ngOnInit(): void {
-    forkJoin(this.arr1, this.arr2, this.arr3).subscribe((data) => {
-      console.log(data); // [1,1,2,2,3,3]
+    this.numbers$.pipe(distinctUntilChanged()).subscribe((data) => {
+      // distinctUntilChanged: nếu có giá trị mới thì so sánh vs giá trị trc đó chứ không so sánh vs tất cả các giá trị như distinct
+      console.log(data);
     });
-    // forkJoin(Observable 1,2,3...): gộp các giá trị lại và trả về 1 mảng chứa các giá trị
+
+    this.users$.pipe(distinctUntilKeyChanged('name')).subscribe((data) => {
+      console.log(data);
+      // distinctUntilKeyChanged(key): giống vs distinctUntilChanged nhưng khác chỗ là so sánh key
+    });
   }
 }
