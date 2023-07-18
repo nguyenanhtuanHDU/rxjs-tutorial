@@ -4,6 +4,7 @@ import {
   Observable,
   Subject,
   Subscription,
+  concat,
   count,
   debounce,
   debounceTime,
@@ -32,35 +33,16 @@ import { AppService } from './app.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  constructor(private readonly appService: AppService) {}
-  api: string = 'https://dog.ceo/api/breeds/image/random';
-  img1: string = '';
-  img2: string = '';
-
-  destroy = new Subject();
+  arr1: Observable<number> = from([1, 2]);
+  arr2: Observable<number> = from([3, 4]);
+  arr3: Observable<number> = from([5, 6]);
 
   ngOnInit(): void {
-    this.appService
-      .getSingleDog()
-      .pipe(takeUntil(this.destroy))
-      .subscribe((data: any) => {
-        this.img1 = data.message;
-      });
+    concat(this.arr1, this.arr2, this.arr3).subscribe((data) => {
+      console.log(data);
+    });
 
-    this.appService
-      .getSingleDog()
-      .pipe(takeUntil(this.destroy))
-      .subscribe((data: any) => {
-        this.destroy.next(true);
-        this.destroy.complete();
-        this.img2 = data.message;
-      });
-  }
-
-  // takeUntil(Subject): unsubscribe khi Subject phát ra giá trị hoặc hoàn thành
-
-  unsub() {
-    // this.destroy.next(true); // phát ra giá trị
-    // this.destroy.complete(); // hoàn thành
+    // concat(Observable 1,2,...): các Observable sẽ chạy lần lượt
+    // Observable thứ 2 chỉ chạy khi Observable 1 complete
   }
 }
