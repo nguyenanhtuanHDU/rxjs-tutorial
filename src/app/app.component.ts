@@ -12,6 +12,7 @@ import {
   elementAt,
   filter,
   first,
+  forkJoin,
   from,
   fromEvent,
   interval,
@@ -39,9 +40,9 @@ export class AppComponent {
   arr3: Observable<number> = from([3, 3]);
 
   ngOnInit(): void {
-    merge(this.arr1, this.arr2, this.arr3).subscribe((data) => {
-      console.log(data); // in ra 1,1, 2,2,3,3 cùng lúc
+    forkJoin(this.arr1, this.arr2, this.arr3).subscribe((data) => {
+      console.log(data); // [1,1,2,2,3,3]
     });
-    // merge(Observable 1,2,3...): các Observable chạy cùng lúc
+    // forkJoin(Observable 1,2,3...): gộp các giá trị lại và trả về 1 mảng chứa các giá trị
   }
 }
