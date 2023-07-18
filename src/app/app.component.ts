@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import {
   Observable,
+  Subject,
   Subscription,
   count,
   debounce,
@@ -20,6 +21,7 @@ import {
   skip,
   take,
   takeLast,
+  takeUntil,
   takeWhile,
 } from 'rxjs';
 import { AppService } from './app.service';
@@ -35,23 +37,30 @@ export class AppComponent {
   img1: string = '';
   img2: string = '';
 
-  subscription = new Subscription();
+  destroy = new Subject();
+
   ngOnInit(): void {
-    this.subscription.add(
-      this.appService.getSingleDog().subscribe((data: any) => {
-        console.log('data1', data);
+    this.appService
+      .getSingleDog()
+      .pipe(takeUntil(this.destroy))
+      .subscribe((data: any) => {
         this.img1 = data.message;
-      })
-    );
-    this.subscription.add(
-      this.appService.getSingleDog().subscribe((data: any) => {
-        console.log('data2', data);
+      });
+
+    this.appService
+      .getSingleDog()
+      .pipe(takeUntil(this.destroy))
+      .subscribe((data: any) => {
+        this.destroy.next(true);
+        this.destroy.complete();
         this.img2 = data.message;
-      })
-    );
+      });
   }
 
+  // takeUntil(Subject): unsubscribe khi Subject phát ra giá trị hoặc hoàn thành
+
   unsub() {
-    this.subscription.unsubscribe();
+    // this.destroy.next(true); // phát ra giá trị
+    // this.destroy.complete(); // hoàn thành
   }
 }
